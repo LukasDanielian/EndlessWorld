@@ -10,7 +10,7 @@ public class Pistol extends Weapon
   }
 
   //Renders all aspect of pistol
-  public void render(float x, float y, float x2, float y2)
+  public void render(float x, float y, float x2, float y2, boolean isPlayer)
   {
     //Pistol display
     pushMatrix();
@@ -31,20 +31,42 @@ public class Pistol extends Weapon
       {
         bullets.remove(temp);
         i--;
-      } 
-      
+      }
+
       //Go through enemys
       else
       {
-        ArrayList<Enemy> enemys = currentZone.getEnemys();
-
-        for (int j = 0; j < enemys.size(); j++)
+        //player shooting at enemys
+        if (isPlayer)
         {
-          if(enemys.get(j).applyDamage(temp.getX(), temp.getY(), super.damage))
+          ArrayList<Enemy> enemys = currentZone.getEnemys();
+
+          for (int j = 0; j < enemys.size(); j++)
           {
-            enemys.remove(j);
-            bullets.remove(i);
-            j--;
+            Enemy e = enemys.get(j);
+
+            if (e.isHit(temp.getX(), temp.getY()))
+            {
+              e.applyDamage(super.damage);
+              bullets.remove(temp);
+              i--;
+
+              if (e.isDead())
+              {
+                enemys.remove(j);
+                j--;
+              }
+            }
+          }
+        }
+
+        //Enemys shooting at player
+        else
+        {
+          if (player.isHit(temp.getX(), temp.getY()))
+          {
+            player.applyDamage(super.damage);
+            bullets.remove(temp);
             i--;
           }
         }
@@ -57,19 +79,21 @@ public class Pistol extends Weapon
       tempTimer--;
 
       if (tempTimer < 0)
+      {
         super.onCoolDown = false;
+        tempTimer = super.coolDown;
+      }
     }
   }
 
   //Fires bullet
-  public void fire()
+  public void fire(float x, float y, float endX, float endY)
   {
     if (!super.onCoolDown && super.rounds > 0)
     {
-      bullets.add(new Bullet(player.getX(), player.getY()));
+      bullets.add(new Bullet(x, y, endX, endY));
       super.rounds--;
       super.onCoolDown = true;
-      tempTimer = super.coolDown;
     }
   }
 }

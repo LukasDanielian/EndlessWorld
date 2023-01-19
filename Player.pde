@@ -1,24 +1,27 @@
 public class Player
 {
-  private float x, y;
+  private float x, y, size;
   private int mapRow, mapCol;
   private Weapon weapon;
+  private int health;
 
   public Player()
   {
     x = width/2;
     y = height/2;
+    size = 75;
+    health = 100;
     
     weapon = new Knife("Knife", 50, 1, 15, "knife.png");
-    weapon = new Pistol("Pistol", 25, 10,10, "pistol.png");
+    weapon = new Pistol("Pistol", 25, 10,15, "pistol.png");
   }
 
   //Renders Main Player
   public void render()
   {
-    weapon.render(x,y,mouseX,mouseY);
+    weapon.render(x,y,mouseX,mouseY,true);
     fill(0,255,0);
-    circle(x,y,75);
+    circle(x,y,size);
   }
   
   //Renders info related to player
@@ -83,10 +86,26 @@ public class Player
     miniMap.updateGrids();
   }
   
+  //checks if player is hit then applies damage
+  public boolean isHit(float x2, float y2)
+  {
+    return dist(x2,y2,x,y) <= size;
+  }
+  
+  public void applyDamage(int damage)
+  {
+    health -= damage;
+  }
+  
+  public boolean isDead()
+  {
+    return health <= 0;
+  }
+  
   //Fires weapon
   public void attack()
   {
-    weapon.fire();
+    weapon.fire(x,y,mouseX, mouseY);
   }
 
   public int getRow()
@@ -107,5 +126,10 @@ public class Player
   public float getY()
   {
     return y;
+  }
+  
+  public float getSize()
+  {
+    return size;
   }
 }

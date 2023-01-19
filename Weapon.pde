@@ -16,11 +16,9 @@ public abstract class Weapon
     this.icon = icon;
   }
 
-  public void render(float x, float y, float x2, float y2) {
-  }
+  public void render(float x, float y, float x2, float y2, boolean isPlayer) {}
 
-  public void fire() {
-  }
+  public void fire(float x, float y, float x2, float y2) {}
 
   public void reload()
   {
