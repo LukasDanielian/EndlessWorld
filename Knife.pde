@@ -1,10 +1,8 @@
 public class Knife extends Weapon
 {
-  private int tempTimer;
-
-  public Knife(String n, int d, int r, int c, String i)
+  public Knife(String name, int damage, int rounds, int coolDown, int reload, String i)
   {
-    super(n, d, r, c, loadImage(i));
+    super(name, damage, rounds, coolDown, reload, loadImage(i));
   }
 
   //Renders all aspect of Knife
@@ -12,16 +10,11 @@ public class Knife extends Weapon
   {
     float knifeAngle = 0;
 
+    super.fireRate.run();
+    
     //Knife stab rate
-    if (super.onCoolDown)
-    {
-      knifeAngle = map(tempTimer, super.coolDown, 0, PI/3, -PI/3);
-
-      tempTimer--;
-
-      if (tempTimer < 0)
-        super.onCoolDown = false;
-    }
+    if (!super.fireRate.canRun())
+      knifeAngle = map(super.fireRate.getTracker(), super.fireRate.getFrames(), 0, PI/3, -PI/3);
 
     //Knife display
     pushMatrix();
@@ -37,25 +30,25 @@ public class Knife extends Weapon
   //Stabs knife
   public void fire(float x, float y, float x2, float y2)
   {
-    if (!super.onCoolDown && super.rounds > 0)
+    if (super.fireRate.canRun() && super.rounds > 0)
     {
-      super.onCoolDown = true;
-      tempTimer = super.coolDown;
+      super.fireRate.startCooldown();
 
       ArrayList<Enemy> enemys = currentZone.getEnemys();
 
       for (int i = 0; i < enemys.size(); i++)
       {
-        Enemy temp = enemys.get(i);
+        Enemy e = enemys.get(i);
         float lookAngle = atan2(y2 - y, x2 - x);
-        float enemyAngle = atan2(temp.getY() - y, temp.getX() - x);
+        float enemyAngle = atan2(e.getY() - y, e.getX() - x);
 
-        if (dist(x, y, temp.getX(), temp.getY()) < player.getSize() * 2 && enemyAngle > lookAngle - PI/3 && enemyAngle < lookAngle + PI/3)
-          temp.applyDamage(super.damage);
+        if (dist(x, y, e.getX(), e.getY()) < player.getSize() * 2 && enemyAngle > lookAngle - PI/3 && enemyAngle < lookAngle + PI/3)
+          e.applyDamage(super.damage);
 
-        if (temp.isDead())
+        if (e.isDead())
         {
-          enemys.remove(temp);
+          currentZone.dropWeapon(e.getX(), e.getY());
+          enemys.remove(e);
           i--;
         }
       }

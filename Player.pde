@@ -4,6 +4,7 @@ public class Player
   private int mapRow, mapCol;
   private Weapon weapon;
   private int health;
+  private Cooldown grabWeapon;
 
   public Player()
   {
@@ -11,23 +12,36 @@ public class Player
     y = height/2;
     size = 75;
     health = 100;
-    
-    weapon = new Knife("Knife", 50, 1, 15, "knife.png");
-    weapon = new Pistol("Pistol", 25, 10,15, "pistol.png");
+    grabWeapon = new Cooldown(50);
+
+    weapon = new Knife("Knife", 50, 1, 15, 100, "knife.png");
+    //weapon = new Pistol("Pistol", 25, 10, 15, "pistol.png");
   }
 
   //Renders Main Player
   public void render()
   {
-    weapon.render(x,y,mouseX,mouseY,true);
-    fill(0,255,0);
-    circle(x,y,size);
+    weapon.render(x, y, mouseX, mouseY, true);
+    fill(255);
+    circle(x, y, size);
+    
+    grabWeapon.run();
   }
-  
+
   //Renders info related to player
   public void renderPlayerHUD()
   {
-    weapon.renderIcon(width / 2,height * .9,width/20,true);
+    weapon.renderIcon(width /2, height * .9, width/20, true);
+
+    //Heath Bar
+    fill(map(health, 100, 0, 175, 255), map(health, 100, 50, 255, 0), 0);
+    rectMode(CORNER);
+    rect(width/2-150, height * .05 -15, health * 3, 30);
+    rectMode(CENTER);
+    noFill();
+    stroke(0);
+    strokeWeight(2);
+    rect(width/2, height * .05, 300, 30);
   }
 
   //Updates players movement and other actions
@@ -44,10 +58,29 @@ public class Player
         x -= 5;
       if (keyDown('D'))
         x += 5;
-        
+
       //Other keys
-      if(keyDown('R'))
+      if (keyDown('R'))
         weapon.reload();
+      if (keyDown('E'))
+        pickUpWeapon();
+    }
+  }
+
+  //Picks up weapon if in range
+  public void pickUpWeapon()
+  {
+    if (grabWeapon.canRun())
+    {
+      Weapon toDrop = weapon;
+      Weapon toGrab = currentZone.getClosestWeapon(x, y, size * 2);
+
+      if (toGrab != null)
+      {
+        weapon = toGrab;
+        currentZone.dropWeapon(x, y+size, toDrop);
+        grabWeapon.startCooldown();
+      }
     }
   }
 
@@ -85,27 +118,27 @@ public class Player
     updateZone();
     miniMap.updateGrids();
   }
-  
+
   //checks if player is hit then applies damage
   public boolean isHit(float x2, float y2)
   {
-    return dist(x2,y2,x,y) <= size;
+    return dist(x2, y2, x, y) <= size/2;
   }
-  
+
   public void applyDamage(int damage)
   {
     health -= damage;
   }
-  
+
   public boolean isDead()
   {
     return health <= 0;
   }
-  
+
   //Fires weapon
   public void attack()
   {
-    weapon.fire(x,y,mouseX, mouseY);
+    weapon.fire(x, y, mouseX, mouseY);
   }
 
   public int getRow()
@@ -117,7 +150,7 @@ public class Player
   {
     return mapCol;
   }
-  
+
   public float getX()
   {
     return x;
@@ -127,7 +160,7 @@ public class Player
   {
     return y;
   }
-  
+
   public float getSize()
   {
     return size;

@@ -6,15 +6,14 @@ public class Enemy
 
   public Enemy()
   {
-    weapon = new Pistol("Pistol", 25, 10, 50, "pistol.png");
+    weapon = new Pistol("Pistol", 25, 10, 50, 100, "pistol.png");
 
     x = random(0, width);
     y = random(0, height);
-
     xMover = random(-5, 5);
     yMover = random(-5, 5);
 
-    size = random(50, 100);
+    size = 75;
     health = 100;
   }
 
@@ -22,7 +21,7 @@ public class Enemy
   public void render()
   {
     weapon.fire(x,y,player.getX(),player.getY());
-    weapon.render(x, y, player.getX(), player.getY(),false);
+    weapon.render(x, y, player.getX(), player.getY(), false);
     
     fill(255, 0, 0);
     circle(x, y, size);
@@ -39,6 +38,7 @@ public class Enemy
     strokeWeight(2);
     rect(x-50, y-30, 100, 15);
     rectMode(CENTER);
+    noStroke();
 
     checkBounds();
   }
@@ -56,7 +56,7 @@ public class Enemy
   //checks if enemy is hit then applies damage
   public boolean isHit(float x2, float y2)
   {
-    return dist(x2,y2,x,y) <= size;
+    return dist(x2,y2,x,y) <= size/2;
   }
   
   public void applyDamage(int damage)
