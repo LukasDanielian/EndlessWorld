@@ -14,8 +14,7 @@ public class Player
     health = 100;
     grabWeapon = new Cooldown(50);
 
-    weapon = new Knife("Knife", 50, 1, 15, 100, "knife.png");
-    //weapon = new Pistol("Pistol", 25, 10, 15, "pistol.png");
+    weapon = weaponFactory.getRandomWeapon();
   }
 
   //Renders Main Player

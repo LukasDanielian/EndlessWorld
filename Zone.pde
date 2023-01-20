@@ -12,7 +12,7 @@ public class Zone
     weapons = new HashMap<String,Weapon>();
     
     enemys.add(new Enemy());
-    weapons.put(getCords((int)random(0,width),(int)random(0,height)),new Pistol("Pistol", 25, 10, 15, 100,"pistol.png"));
+    weapons.put(getCords((int)random(0,width),(int)random(0,height)),weaponFactory.getRandomWeapon());
     
     //Type One
     if(type == 0)
@@ -53,7 +53,7 @@ public class Zone
   //drops random
   public void dropWeapon(float x, float y)
   {
-    weapons.put(getCords((int)x,(int)y),new Pistol("Pistol", 25, 10, 15, 100,"pistol.png"));
+    weapons.put(getCords((int)x,(int)y),weaponFactory.getRandomWeapon());
   }
   
   //drops weapon 

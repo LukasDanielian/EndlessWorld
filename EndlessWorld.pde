@@ -4,6 +4,7 @@ MiniMap miniMap;
 HashMap<String, Zone> world;
 boolean[] keys;
 boolean isDead;
+WeaponFactory weaponFactory;
 
 public void setup()
 {
@@ -15,6 +16,7 @@ public void setup()
   textAlign(CENTER, CENTER);
 
   //Variable declaration
+  weaponFactory = new WeaponFactory();
   player = new Player();
   currentZone = new Zone();
   miniMap = new MiniMap();

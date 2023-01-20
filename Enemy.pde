@@ -6,7 +6,7 @@ public class Enemy
 
   public Enemy()
   {
-    weapon = new Pistol("Pistol", 25, 10, 50, 100, "pistol.png");
+    weapon = new Pistol("Pistol", 15, 10, 50, 100, "pistol.png");
 
     x = random(0, width);
     y = random(0, height);

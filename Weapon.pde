@@ -1,7 +1,7 @@
 public abstract class Weapon
 {
   private String name;
-  private int damage, rounds, magSize, reload;
+  private int damage, rounds, magSize;
   private PImage icon;
   private ArrayList<Bullet> bullets;
   private Cooldown fireRate, reloadRate;
