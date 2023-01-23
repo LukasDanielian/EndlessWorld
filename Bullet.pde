@@ -16,7 +16,7 @@ public class Bullet
   //Draws bullet and updates position
   public void render()
   {
-    fill(0);
+    fill(255);
     circle(x, y, 10);
 
     x += speed.x;

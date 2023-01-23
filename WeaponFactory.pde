@@ -18,7 +18,6 @@ public class WeaponFactory
     else if (num == 1)
       return new Pistol(names[num], damages[num], rounds[num], coolDowns[num], reload[num], images[num]);
       
-    print("u0");
     return null;
   }
 }
