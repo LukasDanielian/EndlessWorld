@@ -1,6 +1,6 @@
-public class Pistol extends Weapon
+public class Sniper extends Weapon
 {
-  public Pistol(String name, int damage, int rounds, int coolDown, int reload, String i)
+  public Sniper(String name, int damage, int rounds, int coolDown, int reload, String i)
   {
     super(name, damage, rounds, coolDown, reload, loadImage(i));
   }
@@ -10,12 +10,12 @@ public class Pistol extends Weapon
   {
     super.render(x,y,x2,y2,isPlayer);
     
-    //Pistol display
+    //Sniper display
     pushMatrix();
     translate(x, y);
     rotate(atan2(y2 - y, x2 - x));
     fill(#8B8B8B);
-    rect(50, 0, 30, 10);
+    rect(50, 0, 150, 10);
     popMatrix();
   }
 }

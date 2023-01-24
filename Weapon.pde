@@ -22,7 +22,7 @@ public abstract class Weapon
   public void render(float x, float y, float x2, float y2, boolean isPlayer)
   {
     //Bullets
-    for (int i = 0; i < bullets.size(); i++)
+    for (int i = 0; i < bullets.size() && i >= 0; i++)
     {
       Bullet temp = bullets.get(i);
       temp.render();
@@ -37,8 +37,23 @@ public abstract class Weapon
       //Go through enemys
       else
       {
+        //Check if bullets hit obstacles
+        ArrayList<Obstacle> obstacles = currentZone.getObstacles();
+        boolean shouldRun = true;
+        
+        for(int j = 0; j < obstacles.size(); j++)
+        {
+          if(obstacles.get(j).isHit(temp.getX(),temp.getY(), 10))
+          {
+            bullets.remove(temp);
+            i--;
+            j = obstacles.size();
+            shouldRun = false;
+          }
+        }
+        
         //player shooting at enemys
-        if (isPlayer)
+        if (isPlayer && shouldRun)
         {
           ArrayList<Enemy> enemys = currentZone.getEnemys();
 
@@ -56,8 +71,9 @@ public abstract class Weapon
               //enemy dies
               if (e.isDead())
               {
+                player.increaseXP(e.getXP());
                 //random chance at dropping weapon
-                if ((int)random(0, 1) == 0)
+                if ((int)random(0, 5) == 0)
                   currentZone.dropWeapon(e.getX(), e.getY());
 
                 enemys.remove(j);
@@ -68,7 +84,7 @@ public abstract class Weapon
         }
 
         //Enemys shooting at player
-        else if (player.isHit(temp.getX(), temp.getY()))
+        else if (player.isHit(temp.getX(), temp.getY()) && shouldRun)
         {
           player.applyDamage(damage);
           bullets.remove(temp);
@@ -82,11 +98,11 @@ public abstract class Weapon
   }
 
   //Fires bullet
-  public void fire(float x, float y, float x2, float y2)
+  public void fire(float x, float y, float x2, float y2, float vel)
   {
     if (reloadRate.canRun() && fireRate.canRun() && rounds > 0)
     {
-      bullets.add(new Bullet(x, y, x2, y2));
+      bullets.add(new Bullet(x, y, x2, y2, vel));
       rounds--;
       fireRate.startCooldown();
     }
@@ -95,7 +111,7 @@ public abstract class Weapon
   //reloads gun
   public void reload()
   {
-    if (reloadRate.canRun())
+    if (reloadRate.canRun() && rounds < magSize)
     {
       rounds = magSize;
       reloadRate.startCooldown();
@@ -111,14 +127,23 @@ public abstract class Weapon
     //Owns gun
     if (isHolding)
     {
+      //Reload animation
+      if (!reloadRate.canRun())
+      {
+        fill(0);
+        text("Reloading...", 0, -height/8);
+        fill(255, 0, 0);
+        arc(0, 0, width/12.5, width/12.5, -HALF_PI, map(reloadRate.getTracker(), 0, reloadRate.getFrames(), -HALF_PI, PI+HALF_PI), PIE);
+      }
+
       fill(0);
       stroke(255);
       strokeWeight(5);
       circle(0, 0, width/15);
       textSize(25);
       fill(0);
-      text(name, 0, size * .9);
-      text(rounds + "/" + magSize, 0, -size * .9);
+      text(name, 0, size * .95);
+      text(rounds + "/" + magSize, 0, -size * .95);
       noStroke();
     }
 

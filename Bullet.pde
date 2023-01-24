@@ -3,14 +3,16 @@ public class Bullet
   private float x, y;
   private PVector speed;
 
-  public Bullet(float x, float y, float endX, float endY)
+  public Bullet(float x, float y, float endX, float endY, float vel)
   {
     this.x = x;
     this.y = y;
    
     speed = new PVector(endX-x, endY-y).normalize();
-    speed.x *= 10;
-    speed.y *= 10;
+    speed.x *= vel;
+    speed.y *= vel;
+    this.x += speed.x*5;
+    this.y += speed.y*5;
   }
 
   //Draws bullet and updates position

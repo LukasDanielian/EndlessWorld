@@ -39,7 +39,7 @@ public void draw()
 
     //Player Render
     player.render();
-    player.updateMovement();
+    player.updateActions();
     player.checkBounds();
     if (player.isDead())
       isDead = true;

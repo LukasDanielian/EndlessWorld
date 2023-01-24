@@ -1,17 +1,20 @@
 public class Player
 {
-  private float x, y, size;
-  private int mapRow, mapCol;
+  private float x, y, px, py, size;
+  private int mapRow, mapCol, health, level, xp;
   private Weapon weapon;
-  private int health;
   private Cooldown grabWeapon;
 
   public Player()
   {
     x = width/2;
     y = height/2;
+    px = x;
+    py = y;
     size = 75;
     health = 100;
+    xp = 0;
+    level = 1;
     grabWeapon = new Cooldown(50);
 
     weapon = weaponFactory.getRandomWeapon();
@@ -23,7 +26,7 @@ public class Player
     weapon.render(x, y, mouseX, mouseY, true);
     fill(255);
     circle(x, y, size);
-    
+
     grabWeapon.run();
   }
 
@@ -33,21 +36,45 @@ public class Player
     weapon.renderIcon(width /2, height * .9, width/20, true);
 
     //Heath Bar
+    textAlign(CENTER, TOP);
+    fill(0);
+    text("Health", width/2, 0);
+    textAlign(CENTER, CENTER);
     fill(map(health, 100, 0, 175, 255), map(health, 100, 50, 255, 0), 0);
     rectMode(CORNER);
-    rect(width/2-150, height * .05 -15, health * 3, 30);
+    rect(width/2-150, height * .05 -15, health * 3, 30, 50);
     rectMode(CENTER);
     noFill();
     stroke(0);
     strokeWeight(2);
-    rect(width/2, height * .05, 300, 30);
+    rect(width/2, height * .05, 300, 30, 50);
+
+    //Level text
+    textAlign(LEFT, TOP);
+    fill(255);
+    textSize(25);
+    text("Level " + level, 0, 0);
+    textAlign(CENTER, CENTER);
+
+    //Level bar
+    rectMode(CORNER);
+    rect(0, height * .05 -15, xp, 30, 50);
+    rectMode(CENTER);
+    noFill();
+    stroke(0);
+    strokeWeight(2);
+    rect(125, height * .05, 250, 30, 50);
   }
 
   //Updates players movement and other actions
-  public void updateMovement()
+  public void updateActions()
   {
+    //Key options
     if (keyPressed)
     {
+      px = x;
+      py = y;
+
       //Movement
       if (keyDown('W'))
         y -= 5;
@@ -63,6 +90,21 @@ public class Player
         weapon.reload();
       if (keyDown('E'))
         pickUpWeapon();
+    }
+
+    //fires
+    if (mousePressed && mouseButton == LEFT)
+      weapon.fire(x, y, mouseX, mouseY, 30);
+
+    //push back
+    if (currentZone.didHitObstacle(x, y, size/2))
+    {
+      Obstacle closest = currentZone.getClosestObstacle(x, y);
+      fill(255, 0, 0);
+      float[] cords = pushOut(x - size/2, y - size/2, px - size/2, py - size/2, size, size, closest.getX() - closest.getSize()/2, closest.getY() - closest.getSize()/2, closest.getX() - closest.getSize()/2, closest.getY() - closest.getSize()/2, closest.getSize(), closest.getSize());
+
+      x = cords[0] + size/2;
+      y = cords[1] + size/2;
     }
   }
 
@@ -118,6 +160,18 @@ public class Player
     miniMap.updateGrids();
   }
 
+  //adds xp
+  public void increaseXP(int amount)
+  {
+    xp += amount;
+
+    if (xp >= 250)
+    {
+      xp %= 250;
+      level++;
+    }
+  }
+
   //checks if player is hit then applies damage
   public boolean isHit(float x2, float y2)
   {
@@ -132,12 +186,6 @@ public class Player
   public boolean isDead()
   {
     return health <= 0;
-  }
-
-  //Fires weapon
-  public void attack()
-  {
-    weapon.fire(x, y, mouseX, mouseY);
   }
 
   public int getRow()

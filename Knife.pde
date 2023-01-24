@@ -28,7 +28,7 @@ public class Knife extends Weapon
   }
 
   //Stabs knife
-  public void fire(float x, float y, float x2, float y2)
+  public void fire(float x, float y, float x2, float y2, float vel)
   {
     if (super.fireRate.canRun() && super.rounds > 0)
     {
@@ -36,17 +36,21 @@ public class Knife extends Weapon
 
       ArrayList<Enemy> enemys = currentZone.getEnemys();
 
+      //Check all enemies
       for (int i = 0; i < enemys.size(); i++)
       {
         Enemy e = enemys.get(i);
         float lookAngle = atan2(y2 - y, x2 - x);
         float enemyAngle = atan2(e.getY() - y, e.getX() - x);
 
+        //check if hit
         if (dist(x, y, e.getX(), e.getY()) < player.getSize() * 2 && enemyAngle > lookAngle - PI/3 && enemyAngle < lookAngle + PI/3)
           e.applyDamage(super.damage);
 
+        //check if dead
         if (e.isDead())
         {
+          player.increaseXP(e.getXP());
           currentZone.dropWeapon(e.getX(), e.getY());
           enemys.remove(e);
           i--;

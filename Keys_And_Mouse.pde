@@ -17,11 +17,3 @@ public boolean keyDown(int key)
 {
   return keys[key];
 }
-
-//Clicks and weapon fire
-public void mousePressed()
-{
-  //Fire weopon
-  if(mouseButton == LEFT)
-    player.attack();
-}

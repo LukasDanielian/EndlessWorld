@@ -2,7 +2,7 @@ public class Enemy
 {
   Weapon weapon;
   float x, y, xMover, yMover, size;
-  int health;
+  int health,xp;
 
   public Enemy()
   {
@@ -15,12 +15,13 @@ public class Enemy
 
     size = 75;
     health = 100;
+    xp = (int)random(10,50);
   }
 
   //Renders enemy
   public void render()
   {
-    weapon.fire(x,y,player.getX(),player.getY());
+    weapon.fire(x,y,player.getX(),player.getY(),10);
     weapon.render(x, y, player.getX(), player.getY(), false);
     
     fill(255, 0, 0);
@@ -51,6 +52,15 @@ public class Enemy
 
     else if (y > height || y < 0)
       yMover = -yMover;
+      
+    else 
+    {
+      if(currentZone.didHitObstacle(x,y,size))
+      {         
+          xMover = -xMover;
+          yMover = -yMover;
+      }
+    }
   }
 
   //checks if enemy is hit then applies damage
@@ -78,5 +88,15 @@ public class Enemy
   public float getY()
   {
     return y;
+  }
+  
+  public int getXP()
+  {
+    return xp;
+  }
+  
+  public float getSize()
+  {
+    return size;
   }
 }
