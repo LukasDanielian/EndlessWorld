@@ -4,6 +4,7 @@ public class Player
   private int mapRow, mapCol, health, level, xp;
   private Weapon weapon;
   private Cooldown grabWeapon;
+  private PImage forward;
 
   public Player()
   {
@@ -18,6 +19,8 @@ public class Player
     grabWeapon = new Cooldown(50);
 
     weapon = weaponFactory.getRandomWeapon();
+    forward = loadImage("player.PNG");
+    forward.resize((int)size,(int)size);
   }
 
   //Renders Main Player
@@ -25,7 +28,7 @@ public class Player
   {
     weapon.render(x, y, mouseX, mouseY, true);
     fill(255);
-    circle(x, y, size);
+    image(forward,x, y);
 
     grabWeapon.run();
   }
