@@ -7,8 +7,8 @@ public class Obstacle
 
   public Obstacle(float tallest)
   {
-    x = random(width*.1, width*.9);
-    y = random(tallest, height*.9);
+    x = random(width*.3, width*.7);
+    y = random(tallest, height*.7);
     size = (int)random(width/10, width/5);
     image = loadImage(fileNames[(int)random(0, fileNames.length)]);
     image.resize(size, size);

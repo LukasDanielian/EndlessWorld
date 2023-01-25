@@ -14,10 +14,16 @@ public class Zone
     weapons = new HashMap<String, Weapon>();
 
     //Adds obstacles
-    float tallest = height *.1;
+    float tallest = height *.3;
     for (int i = 0; i < random(1, 4); i++)
     {
-      obstacles.add(new Obstacle(tallest));
+      Obstacle toAdd = new Obstacle(tallest);
+   
+      //insure doesnt hit player
+      while(toAdd.isHit(player.getX(),player.getY(),player.getSize()))
+        toAdd = new Obstacle(tallest);
+        
+      obstacles.add(toAdd);
       tallest = obstacles.get(i).getY();
     }
 
