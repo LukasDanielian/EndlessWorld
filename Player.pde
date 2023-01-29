@@ -3,7 +3,7 @@ public class Player
   private float x, y, px, py, size;
   private int mapRow, mapCol, health, level, xp;
   private Weapon weapon;
-  private Cooldown grabWeapon;
+  private Cooldown grabWeapon, healthBack;
   private PImage forward;
 
   public Player()
@@ -17,6 +17,7 @@ public class Player
     xp = 0;
     level = 1;
     grabWeapon = new Cooldown(50);
+    healthBack = new Cooldown(200);
 
     weapon = weaponFactory.getRandomWeapon();
     forward = loadImage("player.PNG");
@@ -31,6 +32,11 @@ public class Player
     image(forward,x, y);
 
     grabWeapon.run();
+    healthBack.run();
+    
+    //Reheal after taking damage
+    if(healthBack.canRun() && health < 100)
+      health++;
   }
 
   //Renders info related to player
@@ -184,6 +190,7 @@ public class Player
   public void applyDamage(int damage)
   {
     health -= damage;
+    healthBack.startCooldown();
   }
 
   public boolean isDead()

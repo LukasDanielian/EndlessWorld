@@ -18,9 +18,9 @@ public class Zone
     for (int i = 0; i < random(1, 4); i++)
     {
       Obstacle toAdd = new Obstacle(tallest);
-   
+      
       //insure doesnt hit player
-      while(toAdd.isHit(player.getX(),player.getY(),player.getSize()))
+      while(toAdd.isHit(player.getX(),player.getY(),player.getSize()) || hitOther(toAdd))
         toAdd = new Obstacle(tallest);
         
       obstacles.add(toAdd);
@@ -79,6 +79,20 @@ public class Zone
       String[] loc = keyGrab.split("x");
       weapons.get(keyGrab).renderIcon(float(loc[0]), float(loc[1]), width/30, false);
     }
+  }
+  
+  //Checks if given obstalce hits all other obstacles
+  public boolean hitOther(Obstacle obstacle)
+  {
+    for(int i = 0; i < obstacles.size(); i++)
+    {
+      Obstacle temp = obstacles.get(i);
+      
+      if(!temp.equals(obstacle) && dist(temp.getX(),temp.getY(),obstacle.getX(),obstacle.getY()) < temp.getSize()/2 + obstacle.getSize()/2)
+        return true;
+    }
+    
+    return false;
   }
 
   //drops random
